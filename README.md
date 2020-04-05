@@ -24,10 +24,10 @@
 		1. Open first terminal run: show all available  arguments
 			   * $flutter pub global activate devtools
 			   * $flutter pub global run devtools   # If you have `flutter` on your path.
-		2. Second terminal 
+		2. Second terminal
 			   * $flutter run (Take note on http://127.0.0.1:50976/Swm0bjIe0ks=/ url)
-		3. Open http://localhost:9100/ 
-         * paste  http://127.0.0.1:50976/Swm0bjIe0ks=/ 
+		3. Open http://localhost:9100/
+         * paste  http://127.0.0.1:50976/Swm0bjIe0ks=/
 
 ## Developing Settings:
   * Run flutter project on IOS simulator in the second time:
