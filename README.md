@@ -2,7 +2,7 @@
 
 ## Note:
   * Dart Syntax:
-    1. Using leading underscore to a variable name to inform dart that the variable is a private property
+    1. Adding a leading underscore to a variable name to inform dart that the variable is a private property
   * important widgets: 
     1. Scaffold: creating basic design style
 
