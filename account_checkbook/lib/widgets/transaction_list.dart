@@ -12,63 +12,74 @@ class TransactionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 400,
-      // ListView = SingleChildScrollView + Column
-      child: _userTransactions.isEmpty
-          ? Column(
-              children: <Widget>[
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  'No transactions added yet!',
-                  style: Theme.of(context).textTheme.title,
-                ),
-                Container(
-                  height: 200,
-                  child: Image.asset(
-                    'assets/images/sleep.jpeg',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ],
-            )
-          : ListView.builder(
-              itemBuilder: (ctx, index) {
-                return Card(
-                  margin: EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 5,
-                  ),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      radius: 30,
-                      child: Padding(
-                        padding: EdgeInsets.all(6),
-                        child: FittedBox(
-                          child: Text(
-                              '\$${_userTransactions[index].amount.toStringAsFixed(2)}'),
+    return
+        // ListView = SingleChildScrollView + Column
+        _userTransactions.isEmpty
+            ? LayoutBuilder(
+                builder: (context, constraints) {
+                  return Column(
+                    children: <Widget>[
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        'No transactions added yet!',
+                        style: Theme.of(context).textTheme.title,
+                      ),
+                      Container(
+                        height: constraints.maxHeight * 0.6,
+                        child: Image.asset(
+                          'assets/images/sleep.jpeg',
+                          fit: BoxFit.cover,
                         ),
                       ),
+                    ],
+                  );
+                },
+              )
+            : ListView.builder(
+                itemBuilder: (ctx, index) {
+                  return Card(
+                    margin: EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 5,
                     ),
-                    title: Text(
-                      _userTransactions[index].title,
-                      style: Theme.of(context).textTheme.title,
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        radius: 30,
+                        child: Padding(
+                          padding: EdgeInsets.all(6),
+                          child: FittedBox(
+                            child: Text(
+                                '\$${_userTransactions[index].amount.toStringAsFixed(2)}'),
+                          ),
+                        ),
+                      ),
+                      title: Text(
+                        _userTransactions[index].title,
+                        style: Theme.of(context).textTheme.title,
+                      ),
+                      subtitle: Text(
+                        DateFormat.yMMMd()
+                            .format(_userTransactions[index].date),
+                      ),
+                      // MediaQuery.of(context).size.width > 460 showing content based on device size
+                      trailing: MediaQuery.of(context).size.width > 460
+                          ? FlatButton.icon(
+                              textColor: Theme.of(context).errorColor,
+                              icon: Icon(Icons.delete),
+                              label: Text('Delete'),
+                              onPressed: () => _deleteTxn(index),
+                            )
+                          : IconButton(
+                              icon: Icon(Icons.delete),
+                              color: Theme.of(context).errorColor,
+                              onPressed: () => _deleteTxn(index),
+                            ),
                     ),
-                    subtitle: Text(
-                      DateFormat.yMMMd().format(_userTransactions[index].date),
-                    ),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete),
-                      color: Theme.of(context).errorColor,
-                      onPressed: () => _deleteTxn(index),
-                    ),
-                  ),
-                );
-              },
-              itemCount: _userTransactions.length,
-            ),
-    );
+                  );
+                },
+                itemCount: _userTransactions.length,
+              );
   }
 }

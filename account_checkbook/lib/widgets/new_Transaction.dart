@@ -1,6 +1,10 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import './AdaptiveButton.dart';
 
 class NewTransaction extends StatefulWidget {
   final Function _addNewTransaction;
@@ -16,7 +20,7 @@ class _NewTransactionState extends State<NewTransaction> {
   DateTime _selectedDate;
 
   void _submitDate() {
-    if(amountController.text.isEmpty){
+    if (amountController.text.isEmpty) {
       return;
     }
     final enteredTitle = titleController.text;
@@ -27,7 +31,10 @@ class _NewTransactionState extends State<NewTransaction> {
     }
 
     // widget. is used to access connected widgets
-    widget._addNewTransaction(txTitle: enteredTitle, txAmount: enteredAmount, chosenDate: _selectedDate);
+    widget._addNewTransaction(
+        txTitle: enteredTitle,
+        txAmount: enteredAmount,
+        chosenDate: _selectedDate);
 
     // auto close the top most page
     Navigator.of(context).pop();
@@ -52,56 +59,62 @@ class _NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Container(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            TextField(
-              decoration: InputDecoration(labelText: 'Title'),
-              controller: titleController,
-              onSubmitted: (_) => _submitDate,
-            ),
-            TextField(
-              decoration: InputDecoration(labelText: 'Amount'),
-              controller: amountController,
-              // only show number keyboard
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              // (_) convention to signal to get an argument, but won't use it
-              onSubmitted: (_) => _submitDate,
-            ),
-            Container(
-              height: 70,
-              child: Row(
-                children: <Widget>[
-                  // occupied all available space
-                  Expanded(
-                    child: Text(
-                      _selectedDate == null
-                          ? 'No Date Chosen!'
-                          : 'Picked Date: ${DateFormat.yMd().format(_selectedDate)}',
-                    ),
-                  ),
-                  FlatButton(
-                    textColor: Theme.of(context).primaryColor,
-                    child: Text(
-                      'Choose Date',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    onPressed: _presentDatePicker,
-                  )
-                ],
+    // if overloapping happens the SingleChildScrollView will show
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 5,
+        child: Container(
+          padding: EdgeInsets.only(
+            top: 10,
+            left: 10,
+            right: 10,
+            // viewInsets to get the elements of keyboard
+            bottom: MediaQuery.of(context).viewInsets.bottom + 10,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              // CupertinoTextField() is TextField in the ios system
+              TextField(
+                decoration: InputDecoration(labelText: 'Title'),
+                controller: titleController,
+                onSubmitted: (_) => _submitDate,
               ),
-            ),
-            RaisedButton(
-              child: Text('Add Transaction'),
-              textColor: Theme.of(context).textTheme.button.color,
-              color: Theme.of(context).primaryColor,
-              onPressed: _submitDate,
-            )
-          ],
+              TextField(
+                decoration: InputDecoration(labelText: 'Amount'),
+                controller: amountController,
+                // only show number keyboard
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                // (_) convention to signal to get an argument, but won't use it
+                onSubmitted: (_) => _submitDate,
+              ),
+              Container(
+                height: 70,
+                child: Row(
+                  children: <Widget>[
+                    // occupied all available space
+                    Expanded(
+                      child: Text(
+                        _selectedDate == null
+                            ? 'No Date Chosen!'
+                            : 'Picked Date: ${DateFormat.yMd().format(_selectedDate)}',
+                      ),
+                    ),
+                    AdaptiveButton(
+                      'Choose Date',
+                      _presentDatePicker,
+                    ),
+                  ],
+                ),
+              ),
+              RaisedButton(
+                child: Text('Add Transaction'),
+                textColor: Theme.of(context).textTheme.button.color,
+                color: Theme.of(context).primaryColor,
+                onPressed: _submitDate,
+              )
+            ],
+          ),
         ),
       ),
     );
