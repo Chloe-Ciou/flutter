@@ -1,7 +1,7 @@
 # flutter
 
 ## Note:
-  * Adding new package:
+  * Adding a new package:
     1. go to pub.dev page (https://pub.dev)
     2. add package into pubspec.yaml under dependencies   
     3. run $flutter pub get (if flutter doesn't execute automatically)
@@ -50,6 +50,10 @@
         * RasedButton / FlatButton
         * GestureDetector
         * InkWell
+    8. Dynamic size setting
+        * ex: final curScaleFactor = MediaQuery.of(context).textScaleFactor;
+        * ex: final appBar = AppBar();
+            ( MediaQuery.of(context).size.height - appBar.preferredSize.height - MediaQuery.of(context).padding.top ) * 0.4
 ## Commands: 
   * Create a flutter project: $flutter create <project name>
   * Get flutter dependencies: $flutter packages get
