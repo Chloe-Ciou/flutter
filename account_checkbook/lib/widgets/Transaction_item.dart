@@ -55,7 +55,9 @@ class _TransactionItemState extends State<TransactionItem> {
             padding: const EdgeInsets.all(6),
             child: FittedBox(
               child: Text(
-                  '\$${widget._userTransaction.amount.toStringAsFixed(2)}'),
+                '\$${widget._userTransaction.amount.toStringAsFixed(2)}',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ),
         ),
