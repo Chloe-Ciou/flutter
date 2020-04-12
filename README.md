@@ -31,15 +31,13 @@
         * Stack
         * Card
     5. Repeat Elements:
-        * ListView
+        * ListView (no items side by side) / GridView (items side by side)
 
-        ||  ListView(children:[]) |  ListView.builder()  |
+        ||  ListView(GridView)(children:[]) |  ListView(GridView).builder()  |
         |---|---|---|
         ||   load all contents   |  only load what's visible |
         |usage| short list and konwn lists | long lists and unkonwn lists|
 
-
-        * GridView
         * ListTile
     6. Content Types:
         * Text
@@ -77,7 +75,8 @@
   * Command + option (On Wedgets): showing a Wedget’s info
   * Command + . (On Wedgets): showing a Wedget’s options
 	* Option + Shift + f: auto formating
-	* Command + /: add a comment 
+	* Command + /: comment the code 
+  * Command + K + U: uncomment the code
 	* Option + Shift + o: removing unused imports
 	* Control + Command + Space (Inside a targeted wedget)： opening avaliable elements
 
