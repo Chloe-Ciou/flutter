@@ -54,6 +54,17 @@
         * ex: final curScaleFactor = MediaQuery.of(context).textScaleFactor;
         * ex: final appBar = AppBar();
             ( MediaQuery.of(context).size.height - appBar.preferredSize.height - MediaQuery.of(context).padding.top ) * 0.4
+    9. Widget Lifecycle:
+       |Stateless Widgets| Stateful Widgets|
+       |---|---|
+       |Constructor Function |
+       || initState()|
+       || build()|
+       || setState()|
+       || didUpdateWidget()|
+       || build()|
+       || dispose()|
+
 ## Commands: 
   * Create a flutter project: $flutter create <project name>
   * Get flutter dependencies: $flutter packages get

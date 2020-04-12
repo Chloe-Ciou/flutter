@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import './widgets/transaction_list.dart';
 import './widgets/new_Transaction.dart';
@@ -92,9 +91,13 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _deleteTransaction(int index) {
+  void _deleteTransaction(String id) {
     setState(() {
-      _userTransactions.removeAt(index);
+      for(int i = 0; i < _userTransactions.length; ++i){
+        if(_userTransactions[i].id == id){
+          _userTransactions.removeAt(i);
+        }
+      }
     });
   }
 
@@ -110,6 +113,68 @@ class _MyHomePageState extends State<MyHomePage> {
         );
       },
     );
+  }
+
+
+  List<Widget> _buildLandScapeContent(
+    MediaQueryData mediaQuery,
+    // AppBar appbar,
+    // change AppBar to PreferredSizeWidget to use Cupertino Widgets
+    PreferredSizeWidget appBar,
+    Widget txListWidget,
+  ) {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            'Show Chart',
+            style: Theme.of(context).textTheme.title,
+          ),
+          // switch is used to allow users to switch pages
+          // Switch.adaptive( automatically adapts di different platforms
+          Switch.adaptive(
+            activeColor: Theme.of(context).accentColor,
+            value: _showChart,
+            onChanged: (val) {
+              setState(() {
+                _showChart = val;
+              });
+            },
+          ),
+        ],
+      ),
+      _showChart
+          ? Container(
+              // MediaQuery.of(context).size.height gives full height of the screen
+              //following claculation avoids scrolling screen
+              height: (mediaQuery.size.height -
+                      appBar.preferredSize.height -
+                      mediaQuery.padding.top) *
+                  0.7,
+              child: Chart(_recentTransactions),
+            )
+          : txListWidget
+    ];
+  }
+
+  List<Widget> _buildPortraitContent(
+    MediaQueryData mediaQuery,
+    PreferredSizeWidget appBar,
+    Widget txListWidget,
+  ) {
+    return [
+      Container(
+        // MediaQuery.of(context).size.height gives full height of the screen
+        //following claculation avoids scrolling screen
+        height: (mediaQuery.size.height -
+                appBar.preferredSize.height -
+                mediaQuery.padding.top) *
+            0.3,
+        child: Chart(_recentTransactions),
+      ),
+      txListWidget
+    ];
   }
 
   @override
@@ -156,51 +221,17 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             if (isLandScape)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'Show Chart',
-                    style: Theme.of(context).textTheme.title,
-                  ),
-                  // switch is used to allow users to switch pages
-                  // Switch.adaptive( automatically adapts di different platforms
-                  Switch.adaptive(
-                    activeColor: Theme.of(context).accentColor,
-                    value: _showChart,
-                    onChanged: (val) {
-                      setState(() {
-                        _showChart = val;
-                      });
-                    },
-                  ),
-                ],
+              ..._buildLandScapeContent(
+                mediaQuery,
+                appBar,
+                txListWidget,
               ),
             if (!isLandScape)
-              Container(
-                // MediaQuery.of(context).size.height gives full height of the screen
-                //following claculation avoids scrolling screen
-                height: (mediaQuery.size.height -
-                        appBar.preferredSize.height -
-                        mediaQuery.padding.top) *
-                    0.3,
-                child: Chart(_recentTransactions),
+              ..._buildPortraitContent(
+                mediaQuery,
+                appBar,
+                txListWidget,
               ),
-            if (!isLandScape)
-              txListWidget,
-            //A Card's size depends its child unless it has a parent, a Text's size depends its parent
-            if (isLandScape)
-              _showChart
-                  ? Container(
-                      // MediaQuery.of(context).size.height gives full height of the screen
-                      //following claculation avoids scrolling screen
-                      height: (mediaQuery.size.height -
-                              appBar.preferredSize.height -
-                              mediaQuery.padding.top) *
-                          0.7,
-                      child: Chart(_recentTransactions),
-                    )
-                  : txListWidget,
           ],
         ),
       ),

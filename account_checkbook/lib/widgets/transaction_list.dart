@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:intl/intl.dart';
-
+import './Transaction_item.dart';
 import '../models/transaction.dart';
 
 class TransactionList extends StatelessWidget {
@@ -19,7 +18,7 @@ class TransactionList extends StatelessWidget {
                 builder: (context, constraints) {
                   return Column(
                     children: <Widget>[
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Text(
@@ -27,7 +26,7 @@ class TransactionList extends StatelessWidget {
                         style: Theme.of(context).textTheme.title,
                       ),
                       Container(
-                        height: constraints.maxHeight * 0.6,
+                        height: constraints.maxHeight * 0.4,
                         child: Image.asset(
                           'assets/images/sleep.jpeg',
                           fit: BoxFit.cover,
@@ -37,49 +36,16 @@ class TransactionList extends StatelessWidget {
                   );
                 },
               )
-            : ListView.builder(
-                itemBuilder: (ctx, index) {
-                  return Card(
-                    margin: EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 5,
-                    ),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        radius: 30,
-                        child: Padding(
-                          padding: EdgeInsets.all(6),
-                          child: FittedBox(
-                            child: Text(
-                                '\$${_userTransactions[index].amount.toStringAsFixed(2)}'),
-                          ),
-                        ),
+            : ListView(
+                children: _userTransactions
+                    .map(
+                      (tx) => TransactionItem(
+                        // Add a key bcs a list has stange behavior when delete a element from a list
+                        key: ValueKey(tx.id),
+                        userTransaction: tx,
+                        deleteTxn: _deleteTxn,
                       ),
-                      title: Text(
-                        _userTransactions[index].title,
-                        style: Theme.of(context).textTheme.title,
-                      ),
-                      subtitle: Text(
-                        DateFormat.yMMMd()
-                            .format(_userTransactions[index].date),
-                      ),
-                      // MediaQuery.of(context).size.width > 460 showing content based on device size
-                      trailing: MediaQuery.of(context).size.width > 460
-                          ? FlatButton.icon(
-                              textColor: Theme.of(context).errorColor,
-                              icon: Icon(Icons.delete),
-                              label: Text('Delete'),
-                              onPressed: () => _deleteTxn(index),
-                            )
-                          : IconButton(
-                              icon: Icon(Icons.delete),
-                              color: Theme.of(context).errorColor,
-                              onPressed: () => _deleteTxn(index),
-                            ),
-                    ),
-                  );
-                },
-                itemCount: _userTransactions.length,
-              );
+                    )
+                    .toList());
   }
 }
