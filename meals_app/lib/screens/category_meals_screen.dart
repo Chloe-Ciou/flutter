@@ -1,26 +1,54 @@
 import 'package:flutter/material.dart';
 
-import '../models/dummy_data.dart';
 import '../widgets/meal_item.dart';
+import '../models/meal.dart';
 
-class CategoryMealsScreen extends StatelessWidget {
+class CategoryMealsScreen extends StatefulWidget {
   static const routeName = '/categoryMeals';
-  // folowing are used for using simple navigator
-  // final String categoryId;
-  // final String categoryTitle;
-  // CategoryMealsScreen(this.categoryId, this.categoryTitle);
+
+  final List<Meal> availableMeals;
+  CategoryMealsScreen(this.availableMeals);
+  
+  @override
+  _CategoryMealsScreenState createState() => _CategoryMealsScreenState();
+}
+
+class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
+  String categoryTitle;
+  List<Meal> displayMeals;
+  bool _loadInitData = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  //didChangeDependencies will run before build
+  @override
+  void didChangeDependencies() {
+    // Note: the didChangeDependencies will run everytime the setState run, thus useing if (!_loadInitData) to avoid overwritting
+    if (!_loadInitData) {
+      // get arguments from the route
+      final routeArgs =
+          ModalRoute.of(context).settings.arguments as Map<String, String>;
+      final categoryId = routeArgs['id'];
+      categoryTitle = routeArgs['title'];
+      displayMeals = widget.availableMeals.where((meal) {
+        return meal.categories.contains(categoryId);
+      }).toList();
+    }
+    _loadInitData = true;
+    super.didChangeDependencies();
+  }
+
+  void _removeMeal(String mealId) {
+    setState(() {
+      displayMeals.removeWhere((meal) => meal.id == mealId);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    // get arguments from the route
-    final routeArgs =
-        ModalRoute.of(context).settings.arguments as Map<String, String>;
-    final categoryId = routeArgs['id'];
-    final categoryTitle = routeArgs['title'];
-    final categoryMeals = DUMMY_MEALS.where((meal) {
-      return meal.categories.contains(categoryId);
-    }).toList();
-
     return Scaffold(
       appBar: AppBar(
         title: Text(categoryTitle),
@@ -28,15 +56,16 @@ class CategoryMealsScreen extends StatelessWidget {
       body: ListView.builder(
         itemBuilder: (ctx, index) {
           return MealItem(
-            id: categoryMeals[index].id,
-            title: categoryMeals[index].title,
-            imageUrl: categoryMeals[index].imageUrl,
-            affordability: categoryMeals[index].affordability,
-            complexity: categoryMeals[index].complexity,
-            duration: categoryMeals[index].duration,
+            id: displayMeals[index].id,
+            title: displayMeals[index].title,
+            imageUrl: displayMeals[index].imageUrl,
+            affordability: displayMeals[index].affordability,
+            complexity: displayMeals[index].complexity,
+            duration: displayMeals[index].duration,
+            removeItem: _removeMeal,
           );
         },
-        itemCount: categoryMeals.length,
+        itemCount: displayMeals.length,
       ),
     );
   }
